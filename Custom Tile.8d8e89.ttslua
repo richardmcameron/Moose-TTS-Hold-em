@@ -1,0 +1,16 @@
+function onload()
+    local button = {}
+    button.label = 'Fix'
+    button.width = 700
+    button.height = 700
+    button.font_size = 175
+    button.click_function = 'fixPot'
+    button.function_owner = self
+    button.position = {0, 0, 0}
+    self.createButton(button)
+end
+function fixPot()
+    Global.call('setBlinds')
+    Global.call('calculatePots')
+    Global.call('createPlayerButtons')
+  end
