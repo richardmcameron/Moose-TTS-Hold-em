@@ -1,0 +1,13 @@
+t = nil -- time at loading
+        speed = 10 -- controls how fast the action text pulsates
+        scalezero = 1 -- scale of text at its smallest point
+        scalemax = 1.5 -- scale of text at its largest point
+  
+        function onload()
+          t = os.clock()
+        end
+  
+        function update()
+          local x = scalezero + ((math.sin((os.clock() - t) * speed) + 1) * ((scalemax - scalezero) / 2))
+          self.setScale({x, x, x})
+        end
