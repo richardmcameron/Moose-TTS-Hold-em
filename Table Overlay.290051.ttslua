@@ -1,0 +1,90 @@
+          function onLoad(save_str)
+            --docstring: author: steam: RomanticFool
+            toggles = {}
+            toggles.choppot = false
+            colors = Global.getTable('colors') or {"White", "Brown", "Red", "Orange", "Yellow", "Green", "Teal", "Blue", "Purple", "Pink"}
+          
+            self.UI.setXml('<HorizontalLayout position="0 0 -50" height="50" spacing="10" width="900" offsetXY="0 -750">\n'
+            .. '<Button id="chopToggle" onClick="chopPotToggle" preferredWidth="100" color="Gray" fontSize="32" text="CHOP" />'
+            .. coloredButtons() .. '</HorizontalLayout>'
+            )
+            for i, v in next, colors do
+              local fname = string.format('f_%sChop',v)
+              _G[fname] = function(pl,value,ob)
+                if pl==nil or pl.admin then
+                  log(fname .. "|" .. tostring(toggles.choppot))
+                  if toggles.choppot then
+                    toggles[ob] = not toggles[ob]
+                    if toggles[ob] then
+                      self.UI.setAttributes(ob, {text='✓'})
+                    else
+                      self.UI.setAttributes(ob, {text=' '})
+                    end
+                  else
+                    toggles[ob] = not toggles[ob]
+                    if toggles[ob] then
+                      resetToggles()
+                      self.UI.setAttributes(ob, {text='?'})
+                      toggles[ob] = true
+                    else
+                      self.UI.setAttributes(ob, {text=' '})
+                      Global.call('infMovePotToWinner',{player_color=v,})
+                    end
+                  end
+                end
+              end
+            end
+          end
+          
+          function resetToggles(color_in)
+            local colors = color_in~=nil and {color_in} or colors
+            for i,color in next, colors do
+              local l_ob = ('%sPotButton'):format(color)
+              self.UI.setAttributes(l_ob, {text=' '})
+              toggles[l_ob] = false
+            end
+          end
+          
+          function chopPotToggle(pl,ob,value)
+            --docstring: author: steam: RomanticFool
+            if pl.admin then
+              if toggles.choppot ~= nil then
+                toggles.choppot = not toggles.choppot
+                if toggles.choppot then
+                  self.UI.setAttributes('chopToggle',{color="Black",textColor="White",text="DONE"})
+                  for i,v in next, colors do
+                     if toggles[v..'PotButton'] then
+                       _G[string.format('f_%sChop',v)](nil,nil,v..'PotButton')
+                     end
+                  end
+                else
+                  self.UI.setAttributes("chopToggle",{color="Gray",textColor="Black",text="CHOP"})
+                  local tbl_arg = {}
+                  for i,v in next, colors do
+                     if toggles[v..'PotButton'] then
+                       tbl_arg[#tbl_arg+1] = v
+                       resetToggles(v)
+                     end
+                  end
+                  if #tbl_arg > 0 then Global.call('infSplitPot',tbl_arg) end
+                end
+              end
+            end
+          end
+          
+          function colorButton(color)
+            return string.format("<Button id='%sPotButton' onClick='f_%sChop' color='%s' fontSize='32' text='' />",color,color,color)
+          end
+          
+          function onReset()
+          end
+          
+          function coloredButtons()
+            --docstring: author: steam: RomanticFool
+            local out = ''
+            for i,v in next, colors do
+              out = out .. colorButton(v)
+            end
+            return out
+          end
+          
