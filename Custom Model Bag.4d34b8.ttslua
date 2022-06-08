@@ -1,0 +1,17 @@
+-- --[[ dropped flag set to true the first time the object gets dropped.
+--     this is required because onPickedUp will fire when it's pulled out of the infinite bag. --]]
+-- dropped = false 
+
+-- function onDropped(player_color)
+--     dropped = true
+-- end
+
+-- function onPickedUp(player_color)
+--     if dropped then
+--         if self.getName() == '' then
+--             self.setName(Player[player_color].steam_name) -- name the object after the player who picks it up
+--             self.setDescription(Player[player_color].steam_id) -- set the description to the player's steam ID
+--         end
+--         self.setLuaScript('') -- delete the script
+--     end
+-- end
