@@ -1,0 +1,58 @@
+function onload()
+  self.createButton({
+    label="", click_function="setCamera", function_owner=self,
+    position={0,0,-0.3}, height=20, width=800, color={0,0,0,0.5}, rotation={0,0,0}
+  })
+  self.createButton({
+    label="", click_function="toggleProj", function_owner=self,
+    position={0,0,0}, height=20, width=800, color={0,0,0,0.5}, rotation={0,0,0}
+  })
+  self.createButton({
+    label="", click_function="toggleVis", function_owner=self,
+    position={0,0,0.3}, height=20, width=800, color={0,0,0,0.5}, rotation={0,0,0}
+  })
+  camera = ""
+  findCamera()
+  Global.setVar('camera_guid',camera)
+  visibility = true
+  projection = true
+end
+
+
+function findCamera()
+  local v = getAllObjects()
+  for _, object in ipairs(v) do
+    if object.getName() == "camera_obj" then
+      camera = object.guid
+      print("Found Camera with GUID:" .. camera)
+    end
+  end
+end
+
+function setCamera()
+  local v = getObjectFromGUID(camera)
+  v.setPosition({0,25,0})
+  v.setRotation({0,0,0})
+end
+
+function toggleProj()
+  local v = getObjectFromGUID(camera)
+  if projection == true then
+    v.AssetBundle.playLoopingEffect(1)
+    projection = false
+  else
+    v.AssetBundle.playLoopingEffect(0)
+    projection = true
+  end
+end
+
+function toggleVis()
+  local v = getObjectFromGUID(camera)
+  if visibility == true then
+    v.AssetBundle.playLoopingEffect(2)
+    visibility = false
+  else
+    v.AssetBundle.playLoopingEffect(0)
+    visibility = true
+  end
+end
